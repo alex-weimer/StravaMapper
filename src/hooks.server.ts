@@ -12,6 +12,10 @@ const contentSecurityPolicy = [
 ].join('; ');
 
 const securityHeaders: Handle = async ({ event, resolve }) => {
+	if (event.url.pathname.startsWith('/auth')) {
+		return resolve(event);
+	}
+
 	const response = await resolve(event);
 	const securedResponse = new Response(response.body, response);
 	const getSetCookie = (response.headers as Headers & { getSetCookie?: () => string[] })
