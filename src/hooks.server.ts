@@ -17,9 +17,13 @@ const securityHeaders: Handle = async ({ event, resolve }) => {
 	}
 
 	const response = await resolve(event);
-	const securedResponse = new Response(response.body, response);
-	const getSetCookie = (response.headers as Headers & { getSetCookie?: () => string[] })
-		.getSetCookie;
+	const securedResponse = new Response(response.body, {
+		status: response.status,
+		statusText: response.statusText,
+		headers: new Headers(response.headers)
+	});
+	const headers = response.headers as Headers & { getSetCookie?: () => string[] };
+	const getSetCookie = headers.getSetCookie;
 
 	if (typeof getSetCookie === 'function') {
 		for (const cookie of getSetCookie.call(response.headers)) {
