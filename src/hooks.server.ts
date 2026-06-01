@@ -14,6 +14,17 @@ const contentSecurityPolicy = [
 const securityHeaders: Handle = async ({ event, resolve }) => {
 	const response = await resolve(event);
 	const securedResponse = new Response(response.body, response);
+	const getSetCookie = (response.headers as Headers & { getSetCookie?: () => string[] })
+		.getSetCookie;
+
+	if (typeof getSetCookie === 'function') {
+		for (const cookie of getSetCookie.call(response.headers)) {
+			securedResponse.headers.append('set-cookie', cookie);
+		}
+	} else {
+		const setCookie = response.headers.get('set-cookie');
+		if (setCookie) securedResponse.headers.set('set-cookie', setCookie);
+	}
 
 	securedResponse.headers.set('X-Content-Type-Options', 'nosniff');
 	securedResponse.headers.set('X-Frame-Options', 'DENY');
