@@ -51,7 +51,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@auth/core": "^0.28.0",
+		"@auth/core": "^0.34.3",
 		"@auth/sveltekit": "^0.14.0",
 		"@deck.gl/aggregation-layers": "^9.0.6",
 		"@deck.gl/core": "^9.0.1",
